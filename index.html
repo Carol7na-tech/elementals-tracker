@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fortnite Elementals Tracker</title>
+    <title>Meu Álbum de Elementais - Fortnite</title>
     <style>
         :root {
             --bg-color: #12121c;
@@ -19,89 +19,102 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
             padding: 20px;
+            -webkit-tap-highlight-color: transparent;
         }
 
         header {
             text-align: center;
             margin-bottom: 30px;
-            background: linear-gradient(90deg, #1e1e2f, #2a2a40);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
+            background: linear-gradient(135deg, #252538, #1a1a26);
+            padding: 25px;
+            border-radius: 16px;
+            border: 2px solid #3b3b59;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
         }
 
         h1 {
-            margin: 0 0 10px 0;
-            font-size: 2rem;
+            margin: 0 0 15px 0;
+            font-size: 2.2rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            background: linear-gradient(45deg, #ff9d00, #00f2fe);
+            background: linear-gradient(45deg, #00f2fe, #4facfe, #b042ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .stats-container {
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
         }
 
         .progress-bar-bg {
-            background-color: #12121c;
-            border-radius: 10px;
-            height: 20px;
+            background-color: #0d0d14;
+            border-radius: 12px;
+            height: 24px;
             width: 100%;
             overflow: hidden;
             border: 1px solid var(--border-color);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .progress-bar {
-            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            background: linear-gradient(90deg, #00ff88, #00f2fe);
             height: 100%;
             width: 0%;
-            transition: width 0.3s ease;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .stats-text {
-            font-size: 1rem;
-            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 0 0 8px rgba(0, 255, 136, 0.2);
         }
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
             max-width: 1400px;
             margin: 0 auto;
         }
 
         .card {
             background-color: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            padding: 15px;
+            border-radius: 16px;
+            border: 2px solid var(--border-color);
+            padding: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
-            transition: transform 0.2s, border-color 0.2s;
+            transition: all 0.2s ease;
             cursor: pointer;
             user-select: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
         }
 
-        .card:hover {
-            transform: translateY(-3px);
-            border-color: #4facfe;
+        /* Animaçãozinha ao passar o mouse */
+        @media (min-width: 768px) {
+            .card:hover {
+                transform: translateY(-5px) scale(1.02);
+                border-color: #00f2fe;
+                box-shadow: 0 8px 12px rgba(0, 242, 254, 0.2);
+            }
         }
 
+        /* Estilo de quando ela já conseguiu o elemental */
         .card.owned {
             border-color: #00ff88;
-            background: linear-gradient(180deg, #1e1e2f 0%, #152b22 100%);
+            background: linear-gradient(180deg, #1e1e2f 0%, #11291cf6 100%);
+            box-shadow: 0 0 12px rgba(0, 255, 136, 0.15);
         }
 
         .checkbox-container {
@@ -111,45 +124,53 @@
         }
 
         .checkbox-container input {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             cursor: pointer;
             accent-color: #00ff88;
         }
 
         .avatar-placeholder {
-            width: 70px;
-            height: 70px;
+            width: 75px;
+            height: 75px;
             border-radius: 50%;
-            background-color: #2a2a40;
-            margin: 15px 0;
+            background: linear-gradient(135deg, #2a2a40, #222233);
+            margin: 10px 0 15px 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
+            font-size: 2.2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card.owned .avatar-placeholder {
+            transform: scale(1.05) rotate(5deg);
         }
 
         .item-name {
             font-weight: bold;
             font-size: 1.1rem;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             text-align: center;
+            color: #ffffff;
         }
 
         .badge-row {
             display: flex;
-            gap: 5px;
+            gap: 6px;
             margin-top: auto;
             width: 100%;
             justify-content: center;
         }
 
         .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 5px 10px;
+            border-radius: 8px;
             font-size: 0.75rem;
             font-weight: bold;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .badge.rare { background-color: var(--rare-color); }
@@ -163,7 +184,7 @@
 
         .badge.pct {
             background-color: #2a2a40;
-            color: var(--text-muted);
+            color: #e0e0e0;
             border: 1px solid var(--border-color);
         }
     </style>
@@ -171,95 +192,96 @@
 <body>
 
     <header>
-        <h1>Fortnite Elementals Tracker</h1>
+        <h1>Meu Álbum de Elementais</h1>
         <div class="stats-container">
             <div class="progress-bar-bg">
                 <div class="progress-bar" id="progressBar"></div>
             </div>
-            <div class="stats-text" id="statsText">Carregando coleção...</div>
+            <div class="stats-text" id="statsText">Carregando álbum...</div>
         </div>
     </header>
 
     <div class="grid-container" id="gridContainer"></div>
 
     <script>
+        // Lista totalmente traduzida e adaptada para o Português do Brasil (Fortnite BR)
         const elementals = [
-            // Water
-            { name: "Water", rarity: "rare", pct: "12.83%", icon: "💧" },
-            { name: "Gold Water", rarity: "special", pct: "0.7%", icon: "🪙" },
-            { name: "Gummy Water", rarity: "special", pct: "0.28%", icon: "🍬" },
-            { name: "Galaxy Water", rarity: "special", pct: "0.28%", icon: "🌌" },
-            // Earth
-            { name: "Earth", rarity: "rare", pct: "12.83%", icon: "🌿" },
-            { name: "Gold Earth", rarity: "special", pct: "0.7%", icon: "🪙" },
-            { name: "Gummy Earth", rarity: "special", pct: "0.28%", icon: "🍬" },
-            { name: "Galaxy Earth", rarity: "special", pct: "0.28%", icon: "🌌" },
-            // Fire
-            { name: "Fire", rarity: "rare", pct: "12.45%", icon: "🔥" },
-            { name: "Gold Fire", rarity: "special", pct: "0.68%", icon: "🪙" },
-            { name: "Gummy Fire", rarity: "special", pct: "0.68%", icon: "🍬" },
-            { name: "Galaxy Fire", rarity: "special", pct: "0.27%", icon: "🌌" },
-            // Duck
-            { name: "Duck", rarity: "epic", pct: "5.74%", icon: "🦆" },
-            { name: "Gold Duck", rarity: "special", pct: "0.07%", icon: "🪙" },
-            { name: "Gummy Duck", rarity: "special", pct: "0.04%", icon: "🍬" },
-            { name: "Galaxy Duck", rarity: "special", pct: "0.02%", icon: "🌌" },
-            // Ghost
-            { name: "Ghost", rarity: "epic", pct: "5.74%", icon: "👻" },
-            { name: "Gold Ghost", rarity: "special", pct: "0.07%", icon: "🪙" },
-            { name: "Gummy Ghost", rarity: "special", pct: "0.04%", icon: "🍬" },
-            { name: "Galaxy Ghost", rarity: "special", pct: "0.02%", icon: "🌌" },
-            // Dream
-            { name: "Dream", rarity: "legendary", pct: "2.63%", icon: "💤" },
-            { name: "Gold Dream", rarity: "special", pct: "0.03%", icon: "🪙" },
-            { name: "Gummy Dream", rarity: "special", pct: "0.02%", icon: "🍬" },
-            { name: "Galaxy Dream", rarity: "special", pct: "0.01%", icon: "🌌" },
-            // Demon
-            { name: "Demon", rarity: "epic", pct: "5.76%", icon: "😈" },
-            { name: "Gold Demon", rarity: "special", pct: "0.07%", icon: "🪙" },
-            { name: "Gummy Demon", rarity: "special", pct: "0.04%", icon: "🍬" },
-            { name: "Galaxy Demon", rarity: "special", pct: "0%", icon: "🌌" },
+            // Água
+            { name: "Água", rarity: "rare", rLabel: "Raro", pct: "12.83%", icon: "💧" },
+            { name: "Água Dourada", rarity: "special", rLabel: "Especial", pct: "0.7%", icon: "🪙" },
+            { name: "Água de Goma", rarity: "special", rLabel: "Especial", pct: "0.28%", icon: "🍬" },
+            { name: "Água Galáxia", rarity: "special", rLabel: "Especial", pct: "0.28%", icon: "🌌" },
+            // Terra
+            { name: "Terra", rarity: "rare", rLabel: "Raro", pct: "12.83%", icon: "🌿" },
+            { name: "Terra Dourada", rarity: "special", rLabel: "Especial", pct: "0.7%", icon: "🪙" },
+            { name: "Terra de Goma", rarity: "special", rLabel: "Especial", pct: "0.28%", icon: "🍬" },
+            { name: "Terra Galáxia", rarity: "special", rLabel: "Especial", pct: "0.28%", icon: "🌌" },
+            // Fogo
+            { name: "Fogo", rarity: "rare", rLabel: "Raro", pct: "12.45%", icon: "🔥" },
+            { name: "Fogo Dourado", rarity: "special", rLabel: "Especial", pct: "0.68%", icon: "🪙" },
+            { name: "Fogo de Goma", rarity: "special", rLabel: "Especial", pct: "0.68%", icon: "🍬" },
+            { name: "Fogo Galáxia", rarity: "special", rLabel: "Especial", pct: "0.27%", icon: "🌌" },
+            // Pato
+            { name: "Pato", rarity: "epic", rLabel: "Épico", pct: "5.74%", icon: "🦆" },
+            { name: "Pato Dourado", rarity: "special", rLabel: "Especial", pct: "0.07%", icon: "🪙" },
+            { name: "Pato de Goma", rarity: "special", rLabel: "Especial", pct: "0.04%", icon: "🍬" },
+            { name: "Pato Galáxia", rarity: "special", rLabel: "Especial", pct: "0.02%", icon: "🌌" },
+            // Fantasma
+            { name: "Fantasma", rarity: "epic", rLabel: "Épico", pct: "5.74%", icon: "👻" },
+            { name: "Fantasma Dourado", rarity: "special", rLabel: "Especial", pct: "0.07%", icon: "🪙" },
+            { name: "Fantasma de Goma", rarity: "special", rLabel: "Especial", pct: "0.04%", icon: "🍬" },
+            { name: "Fantasma Galáxia", rarity: "special", rLabel: "Especial", pct: "0.02%", icon: "🌌" },
+            // Sonho
+            { name: "Sonho", rarity: "legendary", rLabel: "Lendário", pct: "2.63%", icon: "💤" },
+            { name: "Sonho Dourado", rarity: "special", rLabel: "Especial", pct: "0.03%", icon: "🪙" },
+            { name: "Sonho de Goma", rarity: "special", rLabel: "Especial", pct: "0.02%", icon: "🍬" },
+            { name: "Sonho Galáxia", rarity: "special", rLabel: "Especial", pct: "0.01%", icon: "🌌" },
+            // Demônio
+            { name: "Demônio", rarity: "epic", rLabel: "Épico", pct: "5.76%", icon: "😈" },
+            { name: "Demônio Dourado", rarity: "special", rLabel: "Especial", pct: "0.07%", icon: "🪙" },
+            { name: "Demônio de Goma", rarity: "special", rLabel: "Especial", pct: "0.04%", icon: "🍬" },
+            { name: "Demônio Galáxia", rarity: "special", rLabel: "Especial", pct: "0%", icon: "🌌" },
             // Punk
-            { name: "Punk", rarity: "legendary", pct: "1.98%", icon: "🎸" },
-            { name: "Gold Punk", rarity: "special", pct: "0.02%", icon: "🪙" },
-            { name: "Gummy Punk", rarity: "special", pct: "0.01%", icon: "🍬" },
-            { name: "Galaxy Punk", rarity: "special", pct: "0%", icon: "🌌" },
-            // King
-            { name: "King", rarity: "epic", pct: "5.74%", icon: "💀" },
-            { name: "Gold King", rarity: "special", pct: "0.07%", icon: "🪙" },
-            { name: "Gummy King", rarity: "special", pct: "0.04%", icon: "🍬" },
-            { name: "Galaxy King", rarity: "special", pct: "0.02%", icon: "🌌" },
-            // Zero Point
-            { name: "Burnt Peanut", rarity: "mythic", pct: "1.01%", icon: "🥜" },
-            { name: "Zero Point", rarity: "mythic", pct: "0.000098%", icon: "🌀" },
-            { name: "Gold Zero Point", rarity: "special", pct: "0.000012%", icon: "🪙" },
-            { name: "Gummy Zero Point", rarity: "special", pct: "0.000006%", icon: "🍬" },
-            { name: "Galaxy Zero Point", rarity: "special", pct: "0.000004%", icon: "🌌" },
-            // Fishy
-            { name: "Fishy", rarity: "rare", pct: "13.79%", icon: "🐟" },
-            { name: "Gold Fishy", rarity: "special", pct: "0.17%", icon: "🪙" },
-            { name: "Gummy Fishy", rarity: "special", pct: "0.08%", icon: "🍬" },
-            { name: "Galaxy Fishy", rarity: "special", pct: "0.06%", icon: "🌌" },
-            // Striker
-            { name: "Striker", rarity: "epic", pct: "5.74%", icon: "⚽" },
-            { name: "Gold Striker", rarity: "special", pct: "0.07%", icon: "🪙" },
-            { name: "Gummy Striker", rarity: "special", pct: "0.04%", icon: "🍬" },
-            { name: "Galaxy Striker", rarity: "special", pct: "0.02%", icon: "🌌" },
+            { name: "Punk", rarity: "legendary", rLabel: "Lendário", pct: "1.98%", icon: "🎸" },
+            { name: "Punk Dourado", rarity: "special", rLabel: "Especial", pct: "0.02%", icon: "🪙" },
+            { name: "Punk de Goma", rarity: "special", rLabel: "Especial", pct: "0.01%", icon: "🍬" },
+            { name: "Punk Galáxia", rarity: "special", rLabel: "Especial", pct: "0%", icon: "🌌" },
+            // Rei
+            { name: "Rei", rarity: "epic", rLabel: "Épico", pct: "5.74%", icon: "💀" },
+            { name: "Rei Dourado", rarity: "special", rLabel: "Especial", pct: "0.07%", icon: "🪙" },
+            { name: "Rei de Goma", rarity: "special", rLabel: "Especial", pct: "0.04%", icon: "🍬" },
+            { name: "Rei Galáxia", rarity: "special", rLabel: "Especial", pct: "0.02%", icon: "🌌" },
+            // Ponto Zero
+            { name: "Amendoim Tostado", rarity: "mythic", rLabel: "Mítico", pct: "1.01%", icon: "🥜" },
+            { name: "Ponto Zero", rarity: "mythic", rLabel: "Mítico", pct: "0.000098%", icon: "🌀" },
+            { name: "Ponto Zero Dourado", rarity: "special", rLabel: "Especial", pct: "0.000012%", icon: "🪙" },
+            { name: "Ponto Zero de Goma", rarity: "special", rLabel: "Especial", pct: "0.000006%", icon: "🍬" },
+            { name: "Ponto Zero Galáxia", rarity: "special", rLabel: "Especial", pct: "0.000004%", icon: "🌌" },
+            // Peixoto
+            { name: "Peixoto", rarity: "rare", rLabel: "Raro", pct: "13.79%", icon: "🐟" },
+            { name: "Peixoto Dourado", rarity: "special", rLabel: "Especial", pct: "0.17%", icon: "🪙" },
+            { name: "Peixoto de Goma", rarity: "special", rLabel: "Especial", pct: "0.08%", icon: "🍬" },
+            { name: "Peixoto Galáxia", rarity: "special", rLabel: "Especial", pct: "0.06%", icon: "🌌" },
+            // Artilheiro
+            { name: "Artilheiro", rarity: "epic", rLabel: "Épico", pct: "5.74%", icon: "⚽" },
+            { name: "Artilheiro Dourado", rarity: "special", rLabel: "Especial", pct: "0.07%", icon: "🪙" },
+            { name: "Artilheiro de Goma", rarity: "special", rLabel: "Especial", pct: "0.04%", icon: "🍬" },
+            { name: "Artilheiro Galáxia", rarity: "special", rLabel: "Especial", pct: "0.02%", icon: "🌌" },
             // Aura
-            { name: "Aura", rarity: "epic", pct: "5.74%", icon: "👑" },
-            { name: "Gold Aura", rarity: "special", pct: "0.07%", icon: "🪙" },
-            { name: "Gummy Aura", rarity: "special", pct: "0.04%", icon: "🍬" },
-            { name: "Galaxy Aura", rarity: "special", pct: "0.02%", icon: "🌌" },
-            // Boss
-            { name: "Boss", rarity: "legendary", pct: "2.63%", icon: "👹" },
-            { name: "Gold Boss", rarity: "special", pct: "0.03%", icon: "🪙" },
-            { name: "Gummy Boss", rarity: "special", pct: "0.02%", icon: "🍬" },
-            { name: "Galaxy Boss", rarity: "special", pct: "0.01%", icon: "🌌" },
-            // Grim
-            { name: "Grim", rarity: "mythic", pct: "0.000098%", icon: "☠️" },
-            { name: "Gold Grim", rarity: "special", pct: "0.000012%", icon: "🪙" },
-            { name: "Gummy Grim", rarity: "special", pct: "0.000006%", icon: "🍬" },
-            { name: "Galaxy Grim", rarity: "special", pct: "0.000004%", icon: "🌌" }
+            { name: "Aura", rarity: "epic", rLabel: "Épico", pct: "5.74%", icon: "👑" },
+            { name: "Aura Dourada", rarity: "special", rLabel: "Especial", pct: "0.07%", icon: "🪙" },
+            { name: "Aura de Goma", rarity: "special", rLabel: "Especial", pct: "0.04%", icon: "🍬" },
+            { name: "Aura Galáxia", rarity: "special", rLabel: "Especial", pct: "0.02%", icon: "🌌" },
+            // Chefe
+            { name: "Chefe", rarity: "legendary", rLabel: "Lendário", pct: "2.63%", icon: "👹" },
+            { name: "Chefe Dourado", rarity: "special", rLabel: "Especial", pct: "0.03%", icon: "🪙" },
+            { name: "Chefe de Goma", rarity: "special", rLabel: "Especial", pct: "0.02%", icon: "🍬" },
+            { name: "Chefe Galáxia", rarity: "special", rLabel: "Especial", pct: "0.01%", icon: "🌌" },
+            // Sombrio
+            { name: "Sombrio", rarity: "mythic", rLabel: "Mítico", pct: "0.000098%", icon: "☠️" },
+            { name: "Sombrio Dourado", rarity: "special", rLabel: "Especial", pct: "0.000012%", icon: "🪙" },
+            { name: "Sombrio de Goma", rarity: "special", rLabel: "Especial", pct: "0.000006%", icon: "🍬" },
+            { name: "Sombrio Galáxia", rarity: "special", rLabel: "Especial", pct: "0.000004%", icon: "🌌" }
         ];
 
         const gridContainer = document.getElementById('gridContainer');
@@ -273,7 +295,7 @@
                 savedState = JSON.parse(localData);
             }
         } catch (e) {
-            console.warn("Storage local bloqueado temporariamente.");
+            console.warn("Storage local indisponível.");
         }
 
         function updateStats() {
@@ -282,7 +304,7 @@
             const percentage = ((owned / total) * 100).toFixed(1);
 
             progressBar.style.width = `${percentage}%`;
-            statsText.innerText = `${owned} de ${total} obtidos (${percentage}%)`;
+            statsText.innerText = `Você já conseguiu ${owned} de ${total} elementais! (${percentage}%)`;
         }
 
         function toggleItem(name, cardElement, checkboxElement) {
@@ -327,7 +349,7 @@
             
             const rarityBadge = document.createElement('span');
             rarityBadge.className = `badge ${item.rarity}`;
-            rarityBadge.innerText = item.rarity;
+            rarityBadge.innerText = item.rLabel;
 
             const pctBadge = document.createElement('span');
             pctBadge.className = 'badge pct';
