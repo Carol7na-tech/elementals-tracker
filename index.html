@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortnite Elementals Tracker</title>
+    <style>
+        :root {
+            --bg-color: #12121c;
+            --card-bg: #1e1e2f;
+            --text-color: #ffffff;
+            --text-muted: #b3b3b3;
+            --border-color: #2f2f48;
+            
+            --rare-color: #0084ff;
+            --epic-color: #b042ff;
+            --legendary-color: #ff9d00;
+            --mythic-color: #ff3e3e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #1e1e2f, #2a2a40);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #ff9d00, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .progress-bar-bg {
+            background-color: #12121c;
+            border-radius: 10px;
+            height: 20px;
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .stats-text {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: #4facfe;
+        }
+
+        .card.owned {
+            border-color: #00ff88;
+            background: linear-gradient(180deg, #1e1e2f 0%, #152b22 100%);
+        }
+
+        .checkbox-container {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+        }
+
+        .checkbox-container input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #00ff88;
+        }
+
+        .avatar-placeholder {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: #2a2a40;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .item-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .badge-row {
+            display: flex;
+            gap: 5px;
+            margin-top: auto;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge.rare { background-color: var(--rare-color); }
+        .badge.epic { background-color: var(--epic-color); }
+        .badge.legendary { background-color: var(--legendary-color); }
+        .badge.mythic { background-color: var(--mythic-color); }
+        .badge.special { 
+            background: linear-gradient(45deg, #ff007f, #7f00ff, #00f2fe);
+            color: #fff;
+        }
+
+        .badge.pct {
+            background-color: #2a2a40;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Fortnite Elementals Tracker</h1>
+        <div class="stats-container">
+            <div class="progress-bar-bg">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="stats-text" id="statsText">Carregando coleção...</div>
+        </div>
+    </header>
+
+    <div class="grid-container" id="gridContainer"></div>
+
+    <script>
+        const elementals = [
+            // Water
+            { name: "Water", rarity: "rare", pct: "12.83%", icon: "💧" },
+            { name: "Gold Water", rarity: "special", pct: "0.7%", icon: "🪙" },
+            { name: "Gummy Water", rarity: "special", pct: "0.28%", icon: "🍬" },
+            { name: "Galaxy Water", rarity: "special", pct: "0.28%", icon: "🌌" },
+            // Earth
+            { name: "Earth", rarity: "rare", pct: "12.83%", icon: "🌿" },
+            { name: "Gold Earth", rarity: "special", pct: "0.7%", icon: "🪙" },
+            { name: "Gummy Earth", rarity: "special", pct: "0.28%", icon: "🍬" },
+            { name: "Galaxy Earth", rarity: "special", pct: "0.28%", icon: "🌌" },
+            // Fire
+            { name: "Fire", rarity: "rare", pct: "12.45%", icon: "🔥" },
+            { name: "Gold Fire", rarity: "special", pct: "0.68%", icon: "🪙" },
+            { name: "Gummy Fire", rarity: "special", pct: "0.68%", icon: "🍬" },
+            { name: "Galaxy Fire", rarity: "special", pct: "0.27%", icon: "🌌" },
+            // Duck
+            { name: "Duck", rarity: "epic", pct: "5.74%", icon: "🦆" },
+            { name: "Gold Duck", rarity: "special", pct: "0.07%", icon: "🪙" },
+            { name: "Gummy Duck", rarity: "special", pct: "0.04%", icon: "🍬" },
+            { name: "Galaxy Duck", rarity: "special", pct: "0.02%", icon: "🌌" },
+            // Ghost
+            { name: "Ghost", rarity: "epic", pct: "5.74%", icon: "👻" },
+            { name: "Gold Ghost", rarity: "special", pct: "0.07%", icon: "🪙" },
+            { name: "Gummy Ghost", rarity: "special", pct: "0.04%", icon: "🍬" },
+            { name: "Galaxy Ghost", rarity: "special", pct: "0.02%", icon: "🌌" },
+            // Dream
+            { name: "Dream", rarity: "legendary", pct: "2.63%", icon: "💤" },
+            { name: "Gold Dream", rarity: "special", pct: "0.03%", icon: "🪙" },
+            { name: "Gummy Dream", rarity: "special", pct: "0.02%", icon: "🍬" },
+            { name: "Galaxy Dream", rarity: "special", pct: "0.01%", icon: "🌌" },
+            // Demon
+            { name: "Demon", rarity: "epic", pct: "5.76%", icon: "😈" },
+            { name: "Gold Demon", rarity: "special", pct: "0.07%", icon: "🪙" },
+            { name: "Gummy Demon", rarity: "special", pct: "0.04%", icon: "🍬" },
+            { name: "Galaxy Demon", rarity: "special", pct: "0%", icon: "🌌" },
+            // Punk
+            { name: "Punk", rarity: "legendary", pct: "1.98%", icon: "🎸" },
+            { name: "Gold Punk", rarity: "special", pct: "0.02%", icon: "🪙" },
+            { name: "Gummy Punk", rarity: "special", pct: "0.01%", icon: "🍬" },
+            { name: "Galaxy Punk", rarity: "special", pct: "0%", icon: "🌌" },
+            // King
+            { name: "King", rarity: "epic", pct: "5.74%", icon: "💀" },
+            { name: "Gold King", rarity: "special", pct: "0.07%", icon: "🪙" },
+            { name: "Gummy King", rarity: "special", pct: "0.04%", icon: "🍬" },
+            { name: "Galaxy King", rarity: "special", pct: "0.02%", icon: "🌌" },
+            // Zero Point
+            { name: "Burnt Peanut", rarity: "mythic", pct: "1.01%", icon: "🥜" },
+            { name: "Zero Point", rarity: "mythic", pct: "0.000098%", icon: "🌀" },
+            { name: "Gold Zero Point", rarity: "special", pct: "0.000012%", icon: "🪙" },
+            { name: "Gummy Zero Point", rarity: "special", pct: "0.000006%", icon: "🍬" },
+            { name: "Galaxy Zero Point", rarity: "special", pct: "0.000004%", icon: "🌌" },
+            // Fishy
+            { name: "Fishy", rarity: "rare", pct: "13.79%", icon: "🐟" },
+            { name: "Gold Fishy", rarity: "special", pct: "0.17%", icon: "🪙" },
+            { name: "Gummy Fishy", rarity: "special", pct: "0.08%", icon: "🍬" },
+            { name: "Galaxy Fishy", rarity: "special", pct: "0.06%", icon: "🌌" },
+            // Striker
+            { name: "Striker", rarity: "epic", pct: "5.74%", icon: "⚽" },
+            { name: "Gold Striker", rarity: "special", pct: "0.07%", icon: "🪙" },
+            { name: "Gummy Striker", rarity: "special", pct: "0.04%", icon: "🍬" },
+            { name: "Galaxy Striker", rarity: "special", pct: "0.02%", icon: "🌌" },
+            // Aura
+            { name: "Aura", rarity: "epic", pct: "5.74%", icon: "👑" },
+            { name: "Gold Aura", rarity: "special", pct: "0.07%", icon: "🪙" },
+            { name: "Gummy Aura", rarity: "special", pct: "0.04%", icon: "🍬" },
+            { name: "Galaxy Aura", rarity: "special", pct: "0.02%", icon: "🌌" },
+            // Boss
+            { name: "Boss", rarity: "legendary", pct: "2.63%", icon: "👹" },
+            { name: "Gold Boss", rarity: "special", pct: "0.03%", icon: "🪙" },
+            { name: "Gummy Boss", rarity: "special", pct: "0.02%", icon: "🍬" },
+            { name: "Galaxy Boss", rarity: "special", pct: "0.01%", icon: "🌌" },
+            // Grim
+            { name: "Grim", rarity: "mythic", pct: "0.000098%", icon: "☠️" },
+            { name: "Gold Grim", rarity: "special", pct: "0.000012%", icon: "🪙" },
+            { name: "Gummy Grim", rarity: "special", pct: "0.000006%", icon: "🍬" },
+            { name: "Galaxy Grim", rarity: "special", pct: "0.000004%", icon: "🌌" }
+        ];
+
+        const gridContainer = document.getElementById('gridContainer');
+        const progressBar = document.getElementById('progressBar');
+        const statsText = document.getElementById('statsText');
+
+        let savedState = {};
+        try {
+            const localData = localStorage.getItem('fortnite_elementals_progress');
+            if (localData) {
+                savedState = JSON.parse(localData);
+            }
+        } catch (e) {
+            console.warn("Storage local bloqueado temporariamente.");
+        }
+
+        function updateStats() {
+            const total = elementals.length;
+            const owned = elementals.filter(item => savedState[item.name]).length;
+            const percentage = ((owned / total) * 100).toFixed(1);
+
+            progressBar.style.width = `${percentage}%`;
+            statsText.innerText = `${owned} de ${total} obtidos (${percentage}%)`;
+        }
+
+        function toggleItem(name, cardElement, checkboxElement) {
+            savedState[name] = !savedState[name];
+            checkboxElement.checked = savedState[name];
+            
+            if (savedState[name]) {
+                cardElement.classList.add('owned');
+            } else {
+                cardElement.classList.remove('owned');
+            }
+
+            try {
+                localStorage.setItem('fortnite_elementals_progress', JSON.stringify(savedState));
+            } catch (e) { }
+            updateStats();
+        }
+
+        elementals.forEach(item => {
+            const isOwned = !!savedState[item.name];
+
+            const card = document.createElement('div');
+            card.className = `card ${isOwned ? 'owned' : ''}`;
+            
+            const checkboxContainer = document.createElement('div');
+            checkboxContainer.className = 'checkbox-container';
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = isOwned;
+            checkboxContainer.appendChild(checkbox);
+
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar-placeholder';
+            avatar.innerText = item.icon;
+
+            const name = document.createElement('div');
+            name.className = 'item-name';
+            name.innerText = item.name;
+
+            const badgeRow = document.createElement('div');
+            badgeRow.className = 'badge-row';
+            
+            const rarityBadge = document.createElement('span');
+            rarityBadge.className = `badge ${item.rarity}`;
+            rarityBadge.innerText = item.rarity;
+
+            const pctBadge = document.createElement('span');
+            pctBadge.className = 'badge pct';
+            pctBadge.innerText = item.pct;
+
+            badgeRow.appendChild(rarityBadge);
+            badgeRow.appendChild(pctBadge);
+
+            card.appendChild(checkboxContainer);
+            card.appendChild(avatar);
+            card.appendChild(name);
+            card.appendChild(badgeRow);
+
+            card.addEventListener('click', (e) => {
+                if(e.target !== checkbox) {
+                    toggleItem(item.name, card, checkbox);
+                }
+            });
+
+            checkbox.addEventListener('change', (e) => {
+                savedState[item.name] = !checkbox.checked;
+                toggleItem(item.name, card, checkbox);
+            });
+
+            gridContainer.appendChild(card);
+        });
+
+        updateStats();
+    </script>
+</body>
+</html>
